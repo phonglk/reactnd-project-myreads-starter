@@ -71,7 +71,7 @@ export default class Search extends React.PureComponent {
           <ol className="books-grid">
             {books.map(book => (
                 <li key={book.id}>
-                  <BookTitle book={book} onShelfChange={this.changeShelf} />
+                  <BookTitle book={{ ...book, shelf: 'none'}} onShelfChange={this.changeShelf} noneOption={false} />
                 </li>
               )
             )}
