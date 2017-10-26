@@ -38,10 +38,8 @@ export default class Search extends React.PureComponent {
   }
 
   changeShelf = async (book, toShelfId) => {
-    this.setState({ isLoading: true });
     const result = await BooksAPI.update(book, toShelfId)
     // update locally (easier way: load the search again);
-    this.setState({ isLoading: false });
     if (result[toShelfId].indexOf(book.id) > -1) {
       const books = this.state.books.filter(b => b.id !== book.id);
       this.setState({ books });
@@ -68,12 +66,20 @@ export default class Search extends React.PureComponent {
           <div className="spinner" style={{ opacity: isSearching ? 1 : 0}} />
         </div>
         <div className="search-books-results">
+          {isSearching === false && searchTerm !== '' && books.length === 0 && <div>There is no book for '{searchTerm}' </div>}
           <ol className="books-grid">
-            {books.map(book => (
+            {books.map(book => {
+              const props = {
+                book: { ...book, shelf: 'none'},
+                onShelfChange: this.changeShelf,
+                noneOption: false,
+              }
+              return (
                 <li key={book.id}>
-                  <BookTitle book={{ ...book, shelf: 'none'}} onShelfChange={this.changeShelf} noneOption={false} />
+                  <BookTitle {...props} />
                 </li>
               )
+            }
             )}
           </ol>
         </div>

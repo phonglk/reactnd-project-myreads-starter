@@ -14,22 +14,33 @@ class BookTitle extends Component {
   static contextTypes = {
     changeShelf: PropTypes.func
   }
-  onShelfChange = (event) => {
+  state = {
+    isLoading: false,
+  }
+  onShelfChange = async (event) => {
     const targetShelf = event.target.value;
     const func = this.props.onShelfChange || this.context.changeShelf;
-    func(this.props.book, targetShelf);
+    this.setState({ isLoading: true })
+    await func(this.props.book, targetShelf);
+    // this.setState({ isLoading: false }) no need because the component is removed
   }
   render () {
     const {
-      imageLinks: { thumbnail },
-      shelf,
-      authors,
-      title,
-    } = this.props.book;
-    const noneOption = this.props.noneOption;
-
+      noneOption,
+      book: {
+        imageLinks: { thumbnail },
+        shelf,
+        authors,
+        title,
+      }
+    } = this.props;
+    const { isLoading } = this.state;
     return (
       <div className="book">
+        {isLoading && <div className="spinner-overlay">
+            <div className="spinner" />
+          </div>
+        }
         <div className="book-top">
           <div className="book-cover" style={
             { width: 128,
@@ -46,7 +57,7 @@ class BookTitle extends Component {
           </div>
         </div>
         <div className="book-title">{title}</div>
-        <div className="book-authors">{authors.join(', ')}</div>
+        <div className="book-authors">{authors && authors.join && authors.join(', ')}</div>
       </div>
     )
   }
