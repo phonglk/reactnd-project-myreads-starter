@@ -55,17 +55,14 @@ export default class ListBook extends React.PureComponent {
     this.loadBookList();
   }
 
-  changeShelf = (book, toShelfId) => {
+  changeShelf = async (book, toShelfId) => {
     this.setState({ isLoading: true });
-    BooksAPI.update(book, toShelfId)
-      .then(result => {
-        // update locally (easier way: load the list again);
-        if (result[toShelfId].indexOf(book.id) > -1) {
-          this.loadBookList();
-        } else {
-          alert('Unknown Error: Book have not moved.');
-        }
-      });
+    const result = await BooksAPI.update(book, toShelfId)
+    if (result[toShelfId].indexOf(book.id) > -1) {
+      this.loadBookList(); // load the list again, optional to update on client side
+    } else {
+      alert('Unknown Error: Book have not moved.');
+    }
   }
   static childContextTypes = {
     changeShelf: propTypes.func,

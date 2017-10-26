@@ -14,6 +14,7 @@ class BookShelf extends Component {
       <div className="bookshelf">
         <h2 className="bookshelf-title">{text}</h2>
         <div className="bookshelf-books">
+        {books.length === 0 && <div className="no-book">There is no book in this shelf</div>}
           <ol className="books-grid">
             {books.map(book => (
                 <li key={book.id}>

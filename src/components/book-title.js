@@ -4,14 +4,16 @@ import { SHELF_LIST } from '../const';
 
 class BookTitle extends Component {
   static propTypes = {
-    book: PropTypes.object,
+    book: PropTypes.object.isRequired,
+    onShelfChange: PropTypes.func,
   }
   static contextTypes = {
     changeShelf: PropTypes.func
   }
   onShelfChange = (event) => {
     const targetShelf = event.target.value;
-    this.context.changeShelf(this.props.book, targetShelf);
+    const func = this.props.onShelfChange || this.context.changeShelf;
+    func(this.props.book, targetShelf);
   }
   render () {
     const {
