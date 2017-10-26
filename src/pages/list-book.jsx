@@ -1,5 +1,6 @@
 import React from 'react'
 import propTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import BookShelf from '../components/book-shelf';
 import * as BooksAPI from '../BooksAPI'
 import { SHELF_LIST } from '../const';
@@ -91,6 +92,9 @@ export default class ListBook extends React.PureComponent {
             ))
             }
           </div>
+        </div>
+        <div className="open-search">
+          <Link to="/search">Add a book</Link>
         </div>
       </div>
     )
