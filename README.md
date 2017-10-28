@@ -21,5 +21,5 @@ The online version is deployed at https://phonglk.github.io/reactnd-project-myre
 
 # Screenshots
 
-[Imgur](https://i.imgur.com/GUzQCdO.png)
-[Imgur](https://i.imgur.com/uxdSxVF.png)
+![Imgur](https://i.imgur.com/GUzQCdO.png)
+![Imgur](https://i.imgur.com/uxdSxVF.png)
