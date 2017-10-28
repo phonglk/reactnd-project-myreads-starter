@@ -1,9 +1,29 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import * as BooksAPI from '../BooksAPI'
 import BookTitle from '../components/book-title'
 
+
+/**
+ * Enhance search result with shelf information
+ * 
+ * @param {array} searchResult 
+ * @param {array} booksInShelves
+ * @returns searchResult with shelf information
+ */
+function massageBooksWithShelf(searchResult, booksInShelves) {
+  const bookHash = booksInShelves.reduce((hash, book) => ({...hash, [book.id]: book.shelf}), {});
+  return searchResult.map(book => ({
+    ...book,
+    shelf: bookHash[book.id] || 'none',
+  }))
+}
+
 export default class Search extends React.PureComponent {
+  static propTypes = {
+    books: PropTypes.array.isRequired,
+  }
   state = {
     isSearching: false,
     searchTerm: '',
@@ -13,6 +33,12 @@ export default class Search extends React.PureComponent {
 
   componentDidMount () {
     this.inputRef.focus();
+    console.log('mount');
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const books = massageBooksWithShelf(this.state.books, nextProps.books);
+    this.setState({ books });
   }
   
   async doSearch() {
@@ -23,6 +49,7 @@ export default class Search extends React.PureComponent {
     if (!books || books.error) {
       books = [];
     }
+    books = massageBooksWithShelf(books, this.props.books);
     this.setState({ books, isSearching: false });
   }
 
@@ -37,17 +64,6 @@ export default class Search extends React.PureComponent {
     this.queueSearch();
   }
 
-  changeShelf = async (book, toShelfId) => {
-    const result = await BooksAPI.update(book, toShelfId)
-    // update locally (easier way: load the search again);
-    if (result[toShelfId].indexOf(book.id) > -1) {
-      const books = this.state.books.filter(b => b.id !== book.id);
-      this.setState({ books });
-    } else {
-      alert('Unknown Error: Book have not moved to shelf.');
-    }
-  }
-  
   render() {
     const { books, isSearching, searchTerm } = this.state;
     return (
@@ -70,10 +86,9 @@ export default class Search extends React.PureComponent {
           <ol className="books-grid">
             {books.map(book => {
               const props = {
-                book: { ...book, shelf: 'none'},
-                onShelfChange: this.changeShelf,
-                noneOption: false,
-              }
+                book,
+                showShelfLabel: true,
+              };
               return (
                 <li key={book.id}>
                   <BookTitle {...props} />

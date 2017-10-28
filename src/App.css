@@ -134,9 +134,9 @@ body, .app {
 .book .spinner-overlay {
   position: absolute;
   top: 0;
-  width: 100%;
+  width: calc(100% + 10px);
   height: 100%;
-  left: 0;
+  left: -10px;
   z-index: 1;
   padding: calc(50% - 20px);
   box-sizing: border-box;
@@ -160,6 +160,34 @@ body, .app {
   height: 200px;
   display: flex;
   align-items: flex-end;
+}
+
+.book-top .book-title-ribbon {
+  position: absolute;
+  top: 15px;
+  left: -10px;
+  height: 25px;
+  background: #01ADEF;
+}
+
+/* Ribbon: https://codepen.io/ajimix/pen/sDret?page=3 */
+.book-top .book-title-ribbon span {
+  position: relative;
+  padding: 2px 4px;
+  color: #fff;
+  text-align: center;
+  font-size: 14px;
+}
+
+.book-top .book-title-ribbon span:before {
+  content: '';
+  position: absolute;
+  height: 0;
+  width: 0;
+  bottom: 100%;
+  left: 0;
+  border-bottom: 10px solid #0299d2;
+  border-left: 10px solid transparent;
 }
 
 .book-shelf-changer {
