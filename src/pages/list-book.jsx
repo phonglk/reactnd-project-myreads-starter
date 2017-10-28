@@ -1,5 +1,5 @@
 import React from 'react'
-import propTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import BookShelf from '../components/book-shelf';
 import * as BooksAPI from '../BooksAPI'
@@ -22,76 +22,44 @@ function sortBooksToShelves (books, shelvesRef) {
   ))
 }
 
-/**
- * Map books to shelves structure return from update api
- * 
- * @param {array of books} booksRef 
- * @param {array} shelves shelves structure to map to
- * @param {any} shelvesRef predefined shelves
- * @returns mapped array
- */
-// function mapBooksToShelves (booksRef, shelves, shelvesRef) {
-//   return shelves.map((books, id) => ({
-//     id,
-//     text: shelvesRef.find(s => s.id === id),
-//     books: books.map(bookId => ({ ...booksRef.find(b => b.id === bookId), shelf: id})),
-//   }))
-// }
-
 export default class ListBook extends React.PureComponent {
+  static propTypes = {
+    books: PropTypes.array.isRequired,
+  }
   constructor(props) {
     super(props);
     this.state = {
       shelves: [],
-      books: [],
-      isLoading: true,
     };
   }
-  loadBookList = async () => {
-    const books = await BooksAPI.getAll();
-    const shelves = sortBooksToShelves(books, SHELF_LIST);
-    this.setState({ shelves, books, isLoading: false });
-  }
-  async componentDidMount() {
-    this.loadBookList();
+
+  componentWillReceiveProps(nextProps) {
+    this.checkAndSet(nextProps);
   }
 
-  changeShelf = async (book, toShelfId) => {
-    // this.setState({ isLoading: true });
-    const result = await BooksAPI.update(book, toShelfId)
-    if ((toShelfId === 'none' && result[book.shelf].indexOf(book.id) === -1)
-      || result[toShelfId].indexOf(book.id) > -1) {
-      await this.loadBookList(); // load the list again, optional to update on client side
-    } else {
-      alert('Unknown Error: Book have not moved.');
-    }
+  componentWillMount() {
+    this.checkAndSet(this.props);
   }
-  static childContextTypes = {
-    changeShelf: propTypes.func,
-  }
-  getChildContext() {
-    return {
-      changeShelf: this.changeShelf
+
+  checkAndSet(props) {
+    if (props.books.length > 0) {
+      const shelves = sortBooksToShelves(props.books, SHELF_LIST);
+      this.setState({ shelves });
     }
   }
 
   render() {
-    const { shelves, isLoading } = this.state;
+    const { shelves } = this.state;
     return (
       <div className="list-books">
         <div className="list-books-title">
           <h1>MyReads</h1>
         </div>
         <div className="list-books-content">
-          { isLoading && <div className="spinner-overlay">
-            <div className="spinner"></div>
-          </div>
-          }
           <div>
             {shelves.map(shelf => (
               <BookShelf {...shelf} key={shelf.id} />
-            ))
-            }
+            ))}
           </div>
         </div>
         <div className="open-search">
