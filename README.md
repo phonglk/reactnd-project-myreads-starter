@@ -23,4 +23,4 @@ The online version is deployed at https://phonglk.github.io/reactnd-project-myre
 ## Book List
 ![Imgur](https://i.imgur.com/GUzQCdO.png)
 ## Book Search
-![Imgur](https://i.imgur.com/lXWDk.png)
+![Imgur](https://i.imgur.com/EDXtFDm.png)
